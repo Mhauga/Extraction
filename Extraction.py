@@ -1,29 +1,34 @@
 import requests
 import openpyxl
 
-def get_business_lists(city):
+# Open a workbook and the active sheet
+wb = openpyxl.Workbook()
+ws = wb.active
+ws.title = "Farmers Markets"
+
+def get_business_lists(city, last_row):
     print(city)
 
     # API Definition
-    my_API_Key = "DbicrMm0HPuDhJIfDZeyJDHPSx1DOOJhvYJ9RGw9dnO_99veGi2XzxDknfAlEi8rcwm_3wOg6t239020EZAPfJKiaGOLtPPCPCuO1XmkhXto_2yk4wgQU-g-WiTSXHYx"
+    my_API_Key = "DbicrMm0HPuDhJIfDZeyJDHPSx1DOOJhvYJ9RGw9dnO_99veGi2XzxDknfAlEi8rcwm_3wOg6t239020EZAPfJKiaGOLtPPCPCuO1XmkhXto_2yk4wgQU-g-WiTSXHYx "
     endPoint = "https://api.yelp.com/v3/businesses/search"
     api_headers = {'Authorization': 'bearer {}'.format(my_API_Key)}
 
     # Parameters
     offset = 0
-    limit = 50
+    limit = 5
     total = 1000
 
     # Variable declarations
     biz_name = []
     biz_address = []
     biz_phone = []
+    biz_reviews = []
 
     while offset < total:
-        parameters = {"term": "Restaurants",
-                     "limit": limit,
+        parameters = {"term": "Farmers Markets",
+                      "limit": limit,
                      "location": city,
-                     "price": "2,3",
                      "sort_by": "rating",
                      "offset": offset}
 
@@ -31,13 +36,12 @@ def get_business_lists(city):
         businesses_json_response = requests.get(url=endPoint, params=parameters, headers=api_headers)
         businesses = businesses_json_response.json()
 
-
-
         # Update Total
         try:
             total = businesses["total"]
+            #  print(len(businesses["businesses"]))
         except:
-            print("Total is less than 50")
+            print("Total is less than {}".format(limit))
             break
 
         # Append business names, addresses, and phones to their respective lists
@@ -45,25 +49,52 @@ def get_business_lists(city):
             biz_name.append(business["name"])
             biz_address.append(business["location"]["address1"])
             biz_phone.append(business['display_phone'])
+            biz_reviews.append(business['review_count'])
 
-        if total - limit >= 50:
-            offset += 50
-        elif total - limit < 50:
-            offset += (total - limit)
-            limit = (total - limit)
+        # Write data of excel function
+        last_row = print_to_excel(biz_name, biz_address, biz_phone, biz_reviews, city,last_row)
 
-    return
+        #  print("Total = {}; Limit = {}; Offset = {}".format(total, limit, offset))
+
+        if total < limit:
+            limit = total
+            offset += limit
+        elif total >= limit:
+            offset += limit
+
+    return last_row
+
+
+def print_to_excel(names, addresses, phones, reviews, city, last_row):
+    # Write data to excel
+    elem = 0
+    while elem < len(names):
+        ws.cell(row = last_row + elem + 1, column = 1).value = names[elem]
+        ws.cell(row = last_row + elem + 1, column = 2).value = addresses[elem]
+        ws.cell(row = last_row + elem + 1, column = 3).value = phones[elem]
+        ws.cell(row = last_row + elem + 1, column = 4).value = city
+        ws.cell(row = last_row + elem + 1, column = 5).value = "OH"
+        ws.cell(row = last_row + elem + 1, column = 6).value = reviews[elem]
+        elem += 1
+
+    last_row = ws.max_row
+    print(last_row)
+
+    return last_row
 
 def main():
+
     MSA_Columbus = (
         "Columbus", "Dublin", "Newark", "Delaware", "Lancaster", "Pickerington", "London", "Marysville", "Circleville",
         "Marion", "Zanesville", "Chillicothe", "New Lexington", "Cambridge", "Washington Court House")
     MSA_Dayton = ("Centerville", "Dayton", "Kettering", "Beavercreek", "Huber Heights", "Fairborn", "Miamisburg",
                   "West Carrollton", "Springfield", "Urbana", "Greenville", "Sidney")
 
+    last_row = 0 # Keeps track of position in Excel
     for city in MSA_Dayton:
-        get_business_lists(city)
+        last_row = get_business_lists(city, last_row)
 
 
 # BEGIN PROGRAM
 main()
+wb.save("Farmers_Markets.xlsx")
