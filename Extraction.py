@@ -10,7 +10,7 @@ def get_business_lists(city, last_row):
     print(city)
 
     # API Definition
-    my_API_Key = "DbicrMm0HPuDhJIfDZeyJDHPSx1DOOJhvYJ9RGw9dnO_99veGi2XzxDknfAlEi8rcwm_3wOg6t239020EZAPfJKiaGOLtPPCPCuO1XmkhXto_2yk4wgQU-g-WiTSXHYx "
+    my_API_Key = ""
     endPoint = "https://api.yelp.com/v3/businesses/search"
     api_headers = {'Authorization': 'bearer {}'.format(my_API_Key)}
 
@@ -73,14 +73,14 @@ def print_to_excel(names, addresses, phones, reviews, city, last_row):
         ws.cell(row = last_row + elem + 1, column = 2).value = addresses[elem]
         ws.cell(row = last_row + elem + 1, column = 3).value = phones[elem]
         ws.cell(row = last_row + elem + 1, column = 4).value = city
-        ws.cell(row = last_row + elem + 1, column = 5).value = "OH"
+        ws.cell(row = last_row + elem + 1, column = 5).value = "ID"
         ws.cell(row = last_row + elem + 1, column = 6).value = reviews[elem]
         elem += 1
 
     last_row = ws.max_row
-    print(last_row)
 
     return last_row
+
 
 def main():
 
@@ -89,12 +89,16 @@ def main():
         "Marion", "Zanesville", "Chillicothe", "New Lexington", "Cambridge", "Washington Court House")
     MSA_Dayton = ("Centerville", "Dayton", "Kettering", "Beavercreek", "Huber Heights", "Fairborn", "Miamisburg",
                   "West Carrollton", "Springfield", "Urbana", "Greenville", "Sidney")
+    MSA_Indianapolis = ("Indianapolis", "Carmel", "Fishers", "Noblesville", "Greenwood", "Anderson", "Lawrence",
+                        "Westfield", "Plainfield", "Zionsville", "Brownsburg", "Franklin", "Greenfrield", "Shelbyville",
+                        "Avon", "Lebanon", "Beech Grove", "Speedway", "Martinsville",
+                        "Greencastle","Danville", "Moorseville")
 
     last_row = 0 # Keeps track of position in Excel
-    for city in MSA_Dayton:
+    for city in MSA_Indianapolis:
         last_row = get_business_lists(city, last_row)
 
 
 # BEGIN PROGRAM
 main()
-wb.save("Farmers_Markets.xlsx")
+wb.save("MSA_Indianapolis_Farmers_Markets.xlsx")
