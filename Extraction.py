@@ -10,7 +10,7 @@ def get_business_lists(city, last_row):
     print(city)
 
     # API Definition
-    my_API_Key = ""
+    my_API_Key = "DbicrMm0HPuDhJIfDZeyJDHPSx1DOOJhvYJ9RGw9dnO_99veGi2XzxDknfAlEi8rcwm_3wOg6t239020EZAPfJKiaGOLtPPCPCuO1XmkhXto_2yk4wgQU-g-WiTSXHYx"
     endPoint = "https://api.yelp.com/v3/businesses/search"
     api_headers = {'Authorization': 'bearer {}'.format(my_API_Key)}
 
