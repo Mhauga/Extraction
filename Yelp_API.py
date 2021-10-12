@@ -10,7 +10,7 @@ import requests
 # Yelp Documentation URL:   https://www.yelp.com/developers/documentation/v3/business_search
 
 #  Define API
-my_API_Key = "DbicrMm0HPuDhJIfDZeyJDHPSx1DOOJhvYJ9RGw9dnO_99veGi2XzxDknfAlEi8rcwm_3wOg6t239020EZAPfJKiaGOLtPPCPCuO1XmkhXto_2yk4wgQU-g-WiTSXHYx"
+# my_API_Key = "insert Yelp API key"
 endPoint = "https://api.yelp.com/v3/businesses/search"
 api_headers = {'Authorization': 'bearer {}'.format(my_API_Key)}
 
